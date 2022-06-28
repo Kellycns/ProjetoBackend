@@ -9,13 +9,17 @@ class AuthenticationController {
     }
 
     static userRegister = async(request, response) => {
-        const {email, name, password} = request.body
+        const {email, username, name, password} = request.body
 
-        const possibleUser = await User.findOne({email})
-        if(possibleUser)
-        return response.status(400).send({error: "Usuáro com e-mail já cadastrado!"})
+        const possibleUserEmail = await User.findOne({email})
+        if(possibleUserEmail)
+        return response.status(400).send({error: "E-mail já cadastrado!"})
 
-        const user = await User.create({email, name, password})
+        const possibleUserUsername = await User.findOne({username})
+        if(possibleUserUsername)
+        return response.status(400).send({error: "Username já cadastrado!"})
+
+        const user = await User.create({email, username, name, password})
         user.password = undefined;
         return response.status(200).send({"message": "Usuário cadastrado com sucesso!", user})
     }
